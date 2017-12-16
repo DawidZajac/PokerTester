@@ -86,8 +86,8 @@ void writeToReadOnlyFile(WCHAR userPath[], char dataBuffer[]) {
 	if (bErrorFlag == FALSE)
 	{
 		DWORD lastError = GetLastError();
-		int error;
-		error << lastError;
+		//int error;
+		//error << lastError;
 		std::cout << "error " << lastError << " in writeToReadOnlyFile, unable to write to a file \n";
 		//retry after a wait period of between 1-10 ms
 		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 10 + 1));
@@ -131,8 +131,8 @@ void createReadOnlyFile(WCHAR userPath[]) {
 	if (CloseHandle(hFile) == 0)
 	{
 		DWORD lastError = GetLastError();
-		int error;
-		error<< lastError;
+		//int error;
+		//error<< lastError;
 		std::cout << "error " << lastError << " in createReadOnlyFile, unable to create a file \n";
 		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 10 + 1));
 		createReadOnlyFile(userPath);
@@ -196,8 +196,8 @@ void appendToReadOnlyFile(WCHAR userPath[], char dataBuffer[]) {
 	if (bErrorFlag == FALSE)
 	{
 		DWORD lastError = GetLastError();
-		int error;
-		error << lastError;
+		//int error;
+		//error << lastError;
 		std::cout << "error " << lastError << " in appendToReadOnlyFile, unable to append to a file \n";
 		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 10 + 1));
 		appendToReadOnlyFile(userPath, dataBuffer);
@@ -659,7 +659,7 @@ int main()
 		std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
 		//main game loop
-		for (int monteCarloState = 0; monteCarloState < monteCarloLength; monteCarloState++) {
+		for (int monteCarloState = 1; monteCarloState <= monteCarloLength; monteCarloState++) {
 			//inform players what iteration they are on:
 			appendToReadOnlyFile(playAreaPath, &("Current Hand:" + std::to_string(monteCarloState) + "\r\n")[0u]);
 
@@ -868,7 +868,7 @@ int main()
 							auto pClass2 = it->second;
 							//how much the player won = the amount the players who folded bet. Do not include their own contribution to the pot, as it has not been taken away from their running total
 							it->second = pClass2 + foldPot;
-							std::cout << pClass1 << " " << it->second << std::endl;
+							std::cout << pClass1 << " total " << it->second << std::endl;
 							break;
 						}
 					}
@@ -942,7 +942,7 @@ int main()
 				clock_t endwait;
 				start = clock();
 				//the time given to each player is adjusted by what betting state it's in- pre-flop it has 1/4 of the time, post flop 2/4, post-turn 3/4 etc
-				endwait = start + (time_*(.25*(currentState + 1))*100); //times 100 to turn it into milliseconds
+				endwait = start + (time_*(.25*(currentState + 1))*1000); //times 1000 to turn it into milliseconds
 				//checking if decision was made
 				boolean decisionFlag = false;
 				//if there are still players playing and the current one has not timed out
@@ -969,7 +969,7 @@ int main()
 							{
 								auto pClass2 = it->second;
 								it->second = pClass2 - std::get<3>(bettingQueue.front());
-								std::cout << pClass1 << " " << it->second << std::endl;
+								std::cout << pClass1 << " total " << it->second << std::endl;
 								break;
 							}
 						}
@@ -1038,7 +1038,7 @@ int main()
 								{
 									auto pClass2 = it->second;
 									it->second = pClass2 - std::get<3>(bettingQueue.front());
-									std::cout << pClass1 << " " << it->second << std::endl;
+									std::cout << pClass1 << " total " << it->second << std::endl;
 									break;
 								}
 							}
@@ -1112,7 +1112,7 @@ int main()
 						{
 							auto pClass2 = it->second;
 							it->second = pClass2 - std::get<3>(bettingQueue.front());
-							std::cout << pClass1 << " " << it->second << std::endl;
+							std::cout << pClass1 << " total " << it->second << std::endl;
 							break;
 						}
 					}
@@ -1182,7 +1182,7 @@ int main()
 						{
 							auto pClass2 = it->second;
 							it->second = pClass2 + foldPot + (currentBet * (bettingQueue.size() - 1));
-							std::cout << pClass1 << " " << it->second << std::endl;
+							std::cout << pClass1 << " total " << it->second << std::endl;
 							break;
 						}
 					}
@@ -1218,7 +1218,7 @@ int main()
 							{
 								auto pClass2 = it->second;
 								it->second = pClass2 + splitWinnings;
-								std::cout << pClass1 << " " << it->second << std::endl;
+								std::cout << pClass1 << " total " << it->second << std::endl;
 								break;
 							}
 						}
@@ -1261,7 +1261,7 @@ int main()
 			playerQueue.push(playerQueue.front());
 			playerQueue.pop();
 			//sleep for waittime to allow players to read the playAreaFile - go from seconds to milliseconds
-			std::this_thread::sleep_for(std::chrono::milliseconds(time_ * 100));
+			std::this_thread::sleep_for(std::chrono::milliseconds(time_ * 1000));
 			//reset the content of the read-only file
 			createReadOnlyFile(playAreaPath);
 		
@@ -1270,9 +1270,11 @@ int main()
 typedef std::chrono::duration<float> fsec;
 std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 fsec fs= t2 - t1;
-appendToFile(backupPath,std::to_string(fs.count()));
+appendToFile(backupPath,std::to_string(fs.count())+ " s");
 std::cout << fs.count()<<" seconds"<<std::endl;
 
+std::cout << "Simulation complete, press any key to exit" << std::endl;
+std::getline(std::cin, configPath);
 
 	return 0;
 }
