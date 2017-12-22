@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{34BB95E1-BD59-42DB-ACB3-53CF338BF96A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>testStuff</RootNamespace>
+    <RootNamespace>PokerTesterProject</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>PokerTesterProject</ProjectName>
   </PropertyGroup>
