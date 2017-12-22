@@ -9,7 +9,7 @@
 //#include "PokerLibrary/libdivide/libdivide.h"
 #pragma once
 #include "stdafx.h"
-#include "PokerLibrary/omp/HandEvaluator.h"
+#include "../../PokerLibrary/PokerLibrary/omp/HandEvaluator.h" //PokerLibrary/HandEvaluator.h"
 #include <iostream>
 #include<random>
 #include <fstream>
@@ -1273,6 +1273,25 @@ fsec fs= t2 - t1;
 appendToFile(backupPath,std::to_string(fs.count())+ " s");
 std::cout << fs.count()<<" seconds"<<std::endl;
 
+//make the temporary best score equal to the score of the player at position 0
+double temp = score[0].second;
+//make the string holding the best player's name the player at position 0
+std::string bestScore = score[0].first;
+	for (int a = 1; a < score.size(); a++) {
+		//current player has higher score
+		if (temp < score[a].second) {
+			temp = score[a].second;
+			bestScore = score[a].first;
+		}
+		//2 players have the exact same score
+		else if (temp == score[a].second) {
+			bestScore += score[a].first;
+		}
+		else {
+
+		}
+	}
+std::cout << "The winner of the simulation is: " << bestScore << " with the score of: " << std::to_string(temp)<<std::endl;
 std::cout << "Simulation complete, press any key to exit" << std::endl;
 std::getline(std::cin, configPath);
 
